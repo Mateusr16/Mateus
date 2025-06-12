@@ -106,14 +106,15 @@
             <h1 class="dancing-script text-4xl md:text-5xl font-bold text-pink-700 mb-6">Nossa Música Especial</h1>
             <p class="text-xl text-gray-700 mb-8">Comece ouvindo a música que representa nosso amor</p>
             
-            <div class="spotify-container"> <audio controls autoplay loop>
+            <div class="spotify-container">
+                <audio id="myAudio" controls loop>
                     <source src="https://github.com/Mateusr16/Mateus/raw/main/Jorge_Mateus_Seu_Olhar.mp3" type="audio/mpeg">
                     Seu navegador não suporta o elemento de áudio.
                 </audio>
                 <p class="text-gray-600 mt-4">"Seu Olhar" - Jorge & Mateus</p>
             </div>
             
-            <button onclick="nextPage()" class="mt-8 bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 px-6 rounded-full shadow-lg transition-all transform hover:scale-105">
+            <button onclick="playMusicAndNextPage()" class="mt-8 bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 px-6 rounded-full shadow-lg transition-all transform hover:scale-105">
                 Continuar <i class="fas fa-arrow-right ml-2"></i>
             </button>
         </div>
@@ -129,8 +130,8 @@
             
             <div class="polaroid inline-block mx-auto mb-8">
                 <img src="https://drive.google.com/thumbnail?sz=w640&id=1pr9dgNCn9Ngc8xdNX-IXBCvfld5QJgc_" 
-                     alt="Nossa foto" 
-                     class="w-64 h-64 object-cover">
+                    alt="Nossa foto" 
+                    class="w-64 h-64 object-cover">
                 <p class="text-gray-600 mt-2">Nossa foto</p>
             </div>
             
@@ -152,7 +153,6 @@
                     <p class="mb-4">Neste Dia dos Namorados, quero te dizer o quanto você é especial para mim. Cada dia ao seu lado é um presente que eu valorizo mais do que palavras podem expressar.</p>
                     <p class="mb-4">Você ilumina meus dias com seu sorriso, aquece meu coração com seu amor e me faz sentir a pessoa mais sortuda do mundo por ter você na minha vida.</p>
                     <p class="mb-4">Cada momento contigo se tornou uma lembrança preciosa... Não importa onde estávamos. O que tornava tudo incrível era estar com você.</p>
-                    <p class="mb-4">Prometo continuar te amando, te respeitando e fazendo de tudo para ver você feliz, hoje e sempre.</p>
                     <p class="font-bold text-pink-600">Feliz Dia dos Namorados, amor da minha vida!</p>
                 </div>
                 
@@ -176,26 +176,26 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 <div class="polaroid">
                     <img src="https://drive.google.com/thumbnail?sz=w640&id=1q9GjXASNwXPFUjD-rNOSc1w7QM4zk2jD" 
-                         alt="Memória 1" 
-                         class="w-full h-80 object-cover">
+                            alt="Memória 1" 
+                            class="w-full h-80 object-cover">
                     <p class="text-gray-600 mt-2">Nossa foto mais linda</p>
                 </div>
                 <div class="polaroid">
                     <img src="https://drive.google.com/thumbnail?sz=w640&id=1q4c-O3GYtN-5sbbwPzm04GssU1MfpSIY" 
-                         alt="Memória 2" 
-                         class="w-full h-80 object-cover">
+                            alt="Memória 2" 
+                            class="w-full h-80 object-cover">
                     <p class="text-gray-600 mt-2">Eeeh carnaval que fez raiva</p>
                 </div>
                 <div class="polaroid">
                     <img src="https://drive.google.com/thumbnail?sz=w640&id=1pqtmL2pFIKwWOXP8TUF0uGxZ6CWptRke" 
-                         alt="Memória 4" 
-                         class="w-full h-80 object-cover">
+                            alt="Memória 4" 
+                            class="w-full h-80 object-cover">
                     <p class="text-gray-600 mt-2">Sempre juntos</p>
-                </div>                
+                </div>             
                 <div class="polaroid">
                     <img src="https://drive.google.com/thumbnail?sz=w640&id=1q--H0bmzvglzlaVGbpSwqlVqgrtdtxDN" 
-                         alt="Memória 3" 
-                         class="w-full h-80 object-cover">
+                            alt="Memória 3" 
+                            class="w-full h-80 object-cover">
                     <p class="text-gray-600 mt-2">Comemorando juntos</p>
                 </div>
             </div>
@@ -249,6 +249,19 @@
         let currentPage = 0;
         const totalPages = 5;
         
+        // Função para iniciar a música e avançar para a próxima página
+        function playMusicAndNextPage() {
+            const audio = document.getElementById('myAudio');
+            if (audio) {
+                audio.play().catch(error => {
+                    console.log('Erro ao tentar reproduzir a música automaticamente:', error);
+                    // Opcional: mostrar uma mensagem ao usuário se a reprodução falhar
+                    // alert('Para ouvir a música, por favor, clique no botão de play no player.');
+                });
+            }
+            nextPage(); // Avança para a próxima página após tentar tocar a música
+        }
+
         function nextPage() {
             if (currentPage < totalPages - 1) {
                 document.getElementById(`page${currentPage}`).classList.remove('active');
@@ -317,11 +330,7 @@
             }, 300);
         }
         
-        window.onload = () => {
-            createFallingHearts();
-        };
-
-                // Função para calcular e atualizar o tempo de amor
+        // Função para calcular e atualizar o tempo de amor
         function updateLoveTimer() {
             const startDate = new Date('2024-10-01T00:00:00');
             const now = new Date();
