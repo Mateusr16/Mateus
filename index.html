@@ -107,15 +107,14 @@
             <p class="text-xl text-gray-700 mb-8">Comece ouvindo a música que representa nosso amor</p>
             
             <div class="spotify-container">
-              <audio controls autoplay loop>
+              <audio id="audioPlayer" controls loop>
                 <source src="https://raw.githubusercontent.com/Mateusr16/Mateus/main/Jorge_Mateus_Seu_Olhar.mp3" type="audio/mpeg">
                 Seu navegador não suporta o elemento de áudio.
               </audio>
               <p class="text-gray-600 mt-4">"Seu Olhar" - Jorge & Mateus</p>
             </div>
-            
-            <button onclick="playMusicAndNextPage()" class="mt-8 bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 px-6 rounded-full shadow-lg transition-all transform hover:scale-105">
-                Continuar <i class="fas fa-arrow-right ml-2"></i>
+            <button onclick="nextPage()" class="mt-8 bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 px-6 rounded-full shadow-lg transition-all transform hover:scale-105">
+              Continuar <i class="fas fa-arrow-right ml-2"></i>
             </button>
         </div>
 
@@ -246,21 +245,21 @@
     </div>
 
     <script>
-        let currentPage = 0;
-        const totalPages = 5;
-        
-        // Função para iniciar a música e avançar para a próxima página
-        function playMusicAndNextPage() {
-            const audio = document.getElementById('myAudio');
-            if (audio) {
-                audio.play().catch(error => {
-                    console.log('Erro ao tentar reproduzir a música automaticamente:', error);
-                    // Opcional: mostrar uma mensagem ao usuário se a reprodução falhar
-                    // alert('Para ouvir a música, por favor, clique no botão de play no player.');
-                });
-            }
-            nextPage(); // Avança para a próxima página após tentar tocar a música
-        }
+  let currentPage = 0;
+  const totalPages = 5;
+  const audio = document.getElementById('audioPlayer');
+
+  function nextPage() {
+    if (currentPage < totalPages - 1) {
+      document.getElementById(`page${currentPage}`).classList.remove('active');
+      if (currentPage === 0) {
+        audio.play().catch(err => console.log('Autoplay bloqueado:', err));
+      }
+      currentPage++;
+      document.getElementById(`page${currentPage}`).classList.add('active');
+      if (currentPage === totalPages - 1) createHearts();
+    }
+  }
 
         function nextPage() {
             if (currentPage < totalPages - 1) {
