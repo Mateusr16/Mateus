@@ -1,5 +1,3 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -63,7 +61,7 @@
                 opacity: 0;
             }
         }
-        .spotify-container { /* Renomeado para player-container para ser mais genérico */
+        .spotify-container {
             max-width: 500px;
             margin: 0 auto;
             padding: 20px;
@@ -71,7 +69,6 @@
             border-radius: 20px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         }
-        /* Correção para o coração centralizado e pulsando corretamente */
         .heart-container {
             display: flex;
             justify-content: center;
@@ -79,9 +76,23 @@
             margin-bottom: 1.5rem;
             width: 100%;
         }
-        /* Estilo para os títulos com Dancing Script */
         .dancing-script {
             font-family: 'Dancing Script', cursive;
+        }
+        /* Novo: Indicador de carregamento */
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #ec4899;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 2s linear infinite;
+            margin: 10px auto;
+            display: none;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
@@ -107,12 +118,16 @@
             <p class="text-xl text-gray-700 mb-8">Comece ouvindo a música que representa nosso amor</p>
             
             <div class="spotify-container">
-                <!-- CORREÇÃO AQUI: caminho simplificado e sem espaços -->
-                <audio id="loveSong" controls style="width: 100%;">
-                    <source src="Jorge_Mateus_Seu_Olhar.mp3" type="audio/mpeg">
-                    Seu navegador não suporta a reprodução de áudio.
-                </audio>
-                <!-- CORREÇÃO AQUI: nome da música atualizado -->
+                <div id="audio-container">
+                    <audio id="loveSong" controls style="width: 100%;">
+                        <source src="Jorge_Mateus_Seu_Olhar.mp3" type="audio/mpeg">
+                        Seu navegador não suporta a reprodução de áudio.
+                    </audio>
+                    <!-- Indicador de carregamento -->
+                    <div class="loader" id="audio-loader"></div>
+                    <!-- Mensagem de erro -->
+                    <p id="audio-error" class="text-red-500 text-sm mt-2 hidden"></p>
+                </div>
                 <p class="text-gray-600 mt-4">"Seu Olhar" - Jorge & Mateus</p>
             </div>
             
@@ -251,6 +266,40 @@
     <script>
         let currentPage = 0;
         const totalPages = 5;
+        const audioElement = document.getElementById('loveSong');
+        const loader = document.getElementById('audio-loader');
+        const errorMsg = document.getElementById('audio-error');
+        
+        // Tenta carregar o áudio
+        function loadAudio() {
+            loader.style.display = 'block';
+            audioElement.load();
+            
+            audioElement.addEventListener('loadeddata', () => {
+                loader.style.display = 'none';
+                try {
+                    audioElement.play();
+                } catch (e) {
+                    console.log("Reprodução automática bloqueada:", e);
+                }
+            });
+            
+            audioElement.addEventListener('error', () => {
+                loader.style.display = 'none';
+                errorMsg.textContent = 'Erro ao carregar a música. Verifique o arquivo.';
+                errorMsg.classList.remove('hidden');
+            });
+        }
+        
+        // Forçar carregamento ao clicar na página
+        document.body.addEventListener('click', () => {
+            if(audioElement.readyState < 2) { // Se ainda não carregou
+                loadAudio();
+            }
+        });
+        
+        // Tenta carregar automaticamente ao iniciar
+        setTimeout(loadAudio, 1000);
         
         function nextPage() {
             if (currentPage < totalPages - 1) {
@@ -279,12 +328,12 @@
             for (let i = 0; i < 30; i++) {
                 const heart = document.createElement('div');
                 heart.innerHTML = '<i class="fas fa-heart"></i>';
-                heart.classList.add('absolute', 'text-2xl', 'opacity-70', 'animate-float');
+                heart.classList.add('absolute', 'text-2xl', 'opacity-70');
+                heart.style.animation = `float ${5 + Math.random() * 10}s ease-in-out infinite`;
                 heart.classList.add(colors[Math.floor(Math.random() * colors.length)]);
                 
                 heart.style.left = Math.random() * 100 + 'vw';
                 heart.style.top = Math.random() * 100 + 'vh';
-                heart.style.animationDuration = 5 + Math.random() * 10 + 's';
                 heart.style.animationDelay = Math.random() * 5 + 's';
                 
                 document.body.appendChild(heart);
@@ -320,54 +369,32 @@
             }, 300);
         }
         
-        window.onload = () => {
-            createFallingHearts();
-        };
-
-                // Função para calcular e atualizar o tempo de amor
+        // Função para calcular e atualizar o tempo de amor
         function updateLoveTimer() {
             const startDate = new Date('2024-10-01T00:00:00');
             const now = new Date();
             const diff = now - startDate;
             
-            // Cálculos de tempo
             const days = Math.floor(diff / (1000 * 60 * 60 * 24));
             const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
             const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((diff % (1000 * 60)) / 1000);
             
-            // Formatar para exibição
             const formatted = `${days} dias, ${Math.floor(hours)} horas, ${minutes} minutos e ${seconds} segundos`;
             
-            // Atualizar o elemento
             const timerElement = document.getElementById('love-timer');
             if(timerElement) {
                 timerElement.textContent = formatted;
             }
         }
         
+        // Única função de carregamento
         window.onload = () => {
             createFallingHearts();
-            
-            // Iniciar e atualizar o contador de amor
             updateLoveTimer();
             setInterval(updateLoveTimer, 1000);
+            loadAudio();
         };
-
-                // Adicione esta função para tocar automaticamente
-        function playAudio() {
-            const audio = document.getElementById('loveSong');
-            audio.play().catch(e => console.log("Autoplay bloqueado: ", e));
-        }
-
-        window.onload = () => {
-            createFallingHearts();
-            updateLoveTimer();
-            setInterval(updateLoveTimer, 1000);
-            
-            // Tenta tocar automaticamente após interação
-            document.body.addEventListener('click', () => playAudio());
-        
     </script>
 </body>
 </html>
