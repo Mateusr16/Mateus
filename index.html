@@ -63,7 +63,7 @@
                 opacity: 0;
             }
         }
-        .spotify-container {
+        .spotify-container { /* Renomeado para audio-container ou removido se não houver outros estilos aplicáveis */
             max-width: 500px;
             margin: 0 auto;
             padding: 20px;
@@ -71,6 +71,7 @@
             border-radius: 20px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         }
+        /* Correção para o coração centralizado e pulsando corretamente */
         .heart-container {
             display: flex;
             justify-content: center;
@@ -78,23 +79,9 @@
             margin-bottom: 1.5rem;
             width: 100%;
         }
+        /* Estilo para os títulos com Dancing Script */
         .dancing-script {
             font-family: 'Dancing Script', cursive;
-        }
-        /* Novo: Indicador de carregamento */
-        .loader {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #ec4899;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            animation: spin 2s linear infinite;
-            margin: 10px auto;
-            display: none;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
@@ -119,17 +106,10 @@
             <h1 class="dancing-script text-4xl md:text-5xl font-bold text-pink-700 mb-6">Nossa Música Especial</h1>
             <p class="text-xl text-gray-700 mb-8">Comece ouvindo a música que representa nosso amor</p>
             
-            <div class="spotify-container">
-                <div id="audio-container">
-                    <audio id="loveSong" controls style="width: 100%;">
-                        <source src="Jorge_Mateus_Seu_Olhar.mp3" type="audio/mpeg">
-                        Seu navegador não suporta a reprodução de áudio.
-                    </audio>
-                    <!-- Indicador de carregamento -->
-                    <div class="loader" id="audio-loader"></div>
-                    <!-- Mensagem de erro -->
-                    <p id="audio-error" class="text-red-500 text-sm mt-2 hidden"></p>
-                </div>
+            <div class="spotify-container"> <audio controls autoplay loop>
+                    <source src="https://github.com/Mateusr16/Mateus/raw/main/Jorge_Mateus_Seu_Olhar.mp3" type="audio/mpeg">
+                    Seu navegador não suporta o elemento de áudio.
+                </audio>
                 <p class="text-gray-600 mt-4">"Seu Olhar" - Jorge & Mateus</p>
             </div>
             
@@ -138,7 +118,6 @@
             </button>
         </div>
 
-        <!-- Página 1 - Capa (original) -->
         <div id="page1" class="page">
             <div class="heart-container">
                 <div class="heart-beat text-red-500 text-6xl">
@@ -161,7 +140,6 @@
         </div>
 
 
-        <!-- Página 2 - Mensagem (original) -->
         <div id="page2" class="page">
             <div class="bg-white bg-opacity-90 rounded-xl p-6 md:p-8 shadow-lg">
                 <div class="text-center mb-6">
@@ -189,11 +167,10 @@
             </div>
         </div>
 
-        <!-- Página 3 - Galeria (original) -->
         <div id="page3" class="page">
             <div class="text-center mb-8">
                 <h2 class="dancing-script text-3xl font-bold text-pink-700 mb-2">Nossos Momentos</h2>
-                <p class="text-gray-600">Algumas das nossas memórias mais especiais</p>
+                <p class="text-gray-600">Alguns das nossas memórias mais especiais</p>
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
@@ -233,7 +210,6 @@
             </div>
         </div>
 
-        <!-- Página 4 - Final (original) -->
         <div id="page4" class="page text-center">
             <div class="heart-beat text-red-500 text-8xl mb-8">
                 <i class="fas fa-heart"></i>
@@ -272,40 +248,6 @@
     <script>
         let currentPage = 0;
         const totalPages = 5;
-        const audioElement = document.getElementById('loveSong');
-        const loader = document.getElementById('audio-loader');
-        const errorMsg = document.getElementById('audio-error');
-        
-        // Tenta carregar o áudio
-        function loadAudio() {
-            loader.style.display = 'block';
-            audioElement.load();
-            
-            audioElement.addEventListener('loadeddata', () => {
-                loader.style.display = 'none';
-                try {
-                    audioElement.play();
-                } catch (e) {
-                    console.log("Reprodução automática bloqueada:", e);
-                }
-            });
-            
-            audioElement.addEventListener('error', () => {
-                loader.style.display = 'none';
-                errorMsg.textContent = 'Erro ao carregar a música. Verifique o arquivo.';
-                errorMsg.classList.remove('hidden');
-            });
-        }
-        
-        // Forçar carregamento ao clicar na página
-        document.body.addEventListener('click', () => {
-            if(audioElement.readyState < 2) { // Se ainda não carregou
-                loadAudio();
-            }
-        });
-        
-        // Tenta carregar automaticamente ao iniciar
-        setTimeout(loadAudio, 1000);
         
         function nextPage() {
             if (currentPage < totalPages - 1) {
@@ -334,12 +276,12 @@
             for (let i = 0; i < 30; i++) {
                 const heart = document.createElement('div');
                 heart.innerHTML = '<i class="fas fa-heart"></i>';
-                heart.classList.add('absolute', 'text-2xl', 'opacity-70');
-                heart.style.animation = `float ${5 + Math.random() * 10}s ease-in-out infinite`;
+                heart.classList.add('absolute', 'text-2xl', 'opacity-70', 'animate-float');
                 heart.classList.add(colors[Math.floor(Math.random() * colors.length)]);
                 
                 heart.style.left = Math.random() * 100 + 'vw';
                 heart.style.top = Math.random() * 100 + 'vh';
+                heart.style.animationDuration = 5 + Math.random() * 10 + 's';
                 heart.style.animationDelay = Math.random() * 5 + 's';
                 
                 document.body.appendChild(heart);
@@ -375,32 +317,40 @@
             }, 300);
         }
         
-        // Função para calcular e atualizar o tempo de amor
+        window.onload = () => {
+            createFallingHearts();
+        };
+
+                // Função para calcular e atualizar o tempo de amor
         function updateLoveTimer() {
             const startDate = new Date('2024-10-01T00:00:00');
             const now = new Date();
             const diff = now - startDate;
             
+            // Cálculos de tempo
             const days = Math.floor(diff / (1000 * 60 * 60 * 24));
             const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
             const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((diff % (1000 * 60)) / 1000);
             
+            // Formatar para exibição
             const formatted = `${days} dias, ${Math.floor(hours)} horas, ${minutes} minutos e ${seconds} segundos`;
             
+            // Atualizar o elemento
             const timerElement = document.getElementById('love-timer');
             if(timerElement) {
                 timerElement.textContent = formatted;
             }
         }
         
-        // Única função de carregamento
         window.onload = () => {
             createFallingHearts();
+            
+            // Iniciar e atualizar o contador de amor
             updateLoveTimer();
             setInterval(updateLoveTimer, 1000);
-            loadAudio();
         };
+        
     </script>
 </body>
 </html>
