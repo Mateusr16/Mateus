@@ -107,11 +107,13 @@
             <p class="text-xl text-gray-700 mb-8">Comece ouvindo a música que representa nosso amor</p>
             
             <div class="spotify-container">
-                <audio controls style="width: 100%;">
-                    <source src="Jorge _ Mateus_Seu_Olhar.mp3" type="audio/mpeg">
+                <!-- CORREÇÃO AQUI: caminho simplificado e sem espaços -->
+                <audio id="loveSong" controls style="width: 100%;">
+                    <source src="Jorge_Mateus_Seu_Olhar.mp3" type="audio/mpeg">
                     Seu navegador não suporta a reprodução de áudio.
                 </audio>
-                <p class="text-gray-600 mt-4">"Nome da Sua Música" - Artista da Sua Música</p>
+                <!-- CORREÇÃO AQUI: nome da música atualizado -->
+                <p class="text-gray-600 mt-4">"Seu Olhar" - Jorge & Mateus</p>
             </div>
             
             <button onclick="nextPage()" class="mt-8 bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 px-6 rounded-full shadow-lg transition-all transform hover:scale-105">
@@ -351,6 +353,20 @@
             updateLoveTimer();
             setInterval(updateLoveTimer, 1000);
         };
+
+                // Adicione esta função para tocar automaticamente
+        function playAudio() {
+            const audio = document.getElementById('loveSong');
+            audio.play().catch(e => console.log("Autoplay bloqueado: ", e));
+        }
+
+        window.onload = () => {
+            createFallingHearts();
+            updateLoveTimer();
+            setInterval(updateLoveTimer, 1000);
+            
+            // Tenta tocar automaticamente após interação
+            document.body.addEventListener('click', () => playAudio());
         
     </script>
 </body>
